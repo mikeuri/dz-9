@@ -7,25 +7,26 @@ public class Man extends Person {
     }
 
     @Override
-    public void registerPartnership(Person newPartner) {
-        System.out.printf("Starting registration of new female partner %s for %s\n",
-                newPartner.getFullName(), this.getFullName());
-        if (getPartner() == null && newPartner.getPartner() == null) {
-            setPartner(newPartner);
-            newPartner.setPartner(this);
-            if (newPartner.getClass() == Woman.class) {
-                newPartner.setLastName(this.getLastName());
-                System.out.printf("%s has registered new female partner %s (maiden name: %s)\n",
-                        this.getFullName(), newPartner.getFullName(), newPartner.initLastName);
-            } else {
-                System.out.printf("ERROR: this action cannot be performed for %s and %s\n",
-                        this.getFullName(), newPartner.getFullName());
-                System.out.println("INFO: Two persons must be opposite gender");
-            }
-        } else {
-            System.out.printf("ERROR: this action cannot be performed for %s and %s\n",
-                    this.getFullName(), newPartner.getFullName());
-            System.out.println("INFO: Two persons must have no other partners");
-        }
+    public boolean isRetired() {
+        return this.getAge() >= 65;
+    }
+
+    @Override
+    public String getGender() {
+        return "male";
+    }
+
+    @Override
+    public void setNewLastName(Person newPartner) {
+        newPartner.setLastName(getLastName());
+        System.out.printf("%s has registered new female partner %s (maiden name: %s)\n",
+                this.getFullName(), newPartner.getFullName(), newPartner.initLastName);
+    }
+
+    @Override
+    public void revertName() {
+        System.out.printf("Last name of %s will be set to initial one: %s\n",
+                getPartner().getFullName(), getPartner().initLastName);
+        getPartner().setLastName(getPartner().initLastName);
     }
 }

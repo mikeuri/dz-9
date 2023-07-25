@@ -42,7 +42,6 @@ public class Main {
         //registration partnership for man
         man2.registerPartnership(woman3);
         System.out.println("Partner of " + man2.getFullName() + " is "+ man2.getPartner().getFullName());
-        //System.out.println("Partner of " + woman3.getFullName() + " is "+ woman3.getPartner().getFullName());
         System.out.println("Partner of " + man2.getPartner().getFullName() + " is "+
                 man2.getPartner().getPartner().getFullName());
         System.out.println("----------------------------------------------------------------------------");

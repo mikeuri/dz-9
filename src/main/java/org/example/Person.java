@@ -6,7 +6,6 @@ public abstract class Person {
     final String initLastName;
     private final int age;
     private Person partner;
-    final String gender;
 
     Person (String firstName, String lastName, int age, Person partner) {
         this.firstName = firstName;
@@ -14,20 +13,16 @@ public abstract class Person {
         this.initLastName = lastName;
         this.age = age;
 
-        if (this.getClass() == Man.class) {
-            gender = "male";
-        } else {
-            gender = "female";
-        }
-
         this.partner = partner;
-        System.out.printf("New %s %s was added\n",gender, getFullName());
+        System.out.printf("New %s %s was added\n", getGender(), getFullName());
 
         if (partner != null) {
             partner.setPartner(this);
             System.out.printf("Partner %s was registered for %s during initialisation\n",
                     partner.getFullName(), getFullName());
+            setNewLastName(partner);
         }
+
         System.out.println("----------------------------------------------------------------------------");
     }
 
@@ -47,15 +42,7 @@ public abstract class Person {
         return this.firstName + " " + lastName;
     }
 
-    //considered not to implement this method as abstract because the logic is quite simple,
-    // and implementing it separately for Man and Woman will double the code
-    public boolean isRetired() {
-        if (this.getClass() == Man.class) {
-            return this.age >= 65;
-        } else {
-            return this.age >= 60;
-        }
-    }
+    public abstract boolean isRetired();
 
     public Person getPartner() {
         return partner;
@@ -65,19 +52,36 @@ public abstract class Person {
         this.partner = newPartner;
     }
 
-    public abstract void registerPartnership(Person newPartner);
+    public abstract String getGender();
 
-    //considered not to implement this method as abstract because the logic is quite simple,
-    // and implementing it separately for Man and Woman will double the code
-    public void deRegisterPartnership(boolean revertName) {
-        if (revertName) {
+    public abstract void setNewLastName(Person newPartner);
+
+    public abstract void revertName();
+
+    public void registerPartnership(Person newPartner) {
+        System.out.printf("Starting registration of new %s partner %s for %s\n",
+                newPartner.getGender(), newPartner.getFullName(), this.getFullName());
+        if (getPartner() == null && newPartner.getPartner() == null
+                && !this.getGender().equals(newPartner.getGender())) {
+            setPartner(newPartner);
+            newPartner.setPartner(this);
+            setNewLastName(newPartner);
+        } else if (getPartner() != null || newPartner.getPartner() != null) {
+            System.out.printf("ERROR: this action cannot be performed for %s and %s\n",
+                    this.getFullName(), newPartner.getFullName());
+            System.out.println("INFO: Two persons must have no other partners");
+        } else {
+            System.out.printf("ERROR: this action cannot be performed for %s and %s\n",
+                    this.getFullName(), newPartner.getFullName());
+            System.out.println("INFO: Two persons must be opposite gender");
+        }
+    }
+
+    public void deRegisterPartnership(boolean isRevertNameRequested) {
+        if (isRevertNameRequested) {
             System.out.printf("Starting deregistration of partner %s for %s with reverting name\n",
                     this.partner.getFullName(), this.getFullName());
-            if (this.getClass() == Woman.class) {
-                this.lastName = this.initLastName;
-            } else {
-            this.partner.lastName = this.partner.initLastName;
-            }
+            revertName();
         } else {
             System.out.printf("Starting deregistration of partner %s for %s without reverting name\n",
                     this.partner.getFullName(), this.getFullName());
