@@ -17,7 +17,7 @@ public abstract class Person {
         System.out.printf("New %s %s was added\n", getGender(), getFullName());
 
         if (partner != null) {
-            partner.setPartner(this);
+            this.partner.partner = this;
             System.out.printf("Partner %s was registered for %s during initialisation\n",
                     partner.getFullName(), getFullName());
             setNewLastName(partner);
@@ -48,10 +48,6 @@ public abstract class Person {
         return partner;
     }
 
-    void setPartner(Person newPartner) {
-        this.partner = newPartner;
-    }
-
     public abstract String getGender();
 
     public abstract void setNewLastName(Person newPartner);
@@ -63,8 +59,8 @@ public abstract class Person {
                 newPartner.getGender(), newPartner.getFullName(), this.getFullName());
         if (getPartner() == null && newPartner.getPartner() == null
                 && !this.getGender().equals(newPartner.getGender())) {
-            setPartner(newPartner);
-            newPartner.setPartner(this);
+            this.partner = newPartner;
+            this.partner.partner = this;
             setNewLastName(newPartner);
         } else if (getPartner() != null || newPartner.getPartner() != null) {
             System.out.printf("ERROR: this action cannot be performed for %s and %s\n",
